@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[73]:
+# In[85]:
 
 
 from sklearn import datasets 
@@ -15,6 +15,7 @@ TASK_CLASSIFICATION = 1
 
 num_factor = 8
 
+## 更新模型参数
 def update(x, mult, s, v, w, w0, alpha):
     w0 -= alpha * mult
     for i in range(len(x)):
@@ -24,7 +25,8 @@ def update(x, mult, s, v, w, w0, alpha):
         for i in range(len(x)):
             grad = s[f] * x[i] - v[i,f] * x[i] * x[i]
             v[i,f] -= alpha * (mult * grad )
-    
+
+## 计算模型预测值
 def predict(x, v, w, w0, s, sum_sqr):
     result = np.dot(w, x) + w0 # w*x
         
@@ -40,7 +42,8 @@ def predict(x, v, w, w0, s, sum_sqr):
         
     return result
 
-def fit(X, y, s, sum_sqr, iter_num = 100, alpha = 0.01):
+## 模型训练
+def fit(X, y, s, sum_sqr, iter_num = 10, alpha = 0.01):
     num_samples = len(y)
     random.seed(1)
     w0 = random.random(1)
@@ -59,6 +62,7 @@ def fit(X, y, s, sum_sqr, iter_num = 100, alpha = 0.01):
         
     return v, w, w0
 
+## sigmoid 函数
 def sigmoid(x):
     return 1.0/(1.0+np.exp(-x))
 
@@ -81,7 +85,7 @@ if __name__=='__main__':
     v, w, w0 = fit(train_x, train_y, s, sum_sqr)
     
     for i in range(len(test_y)):
-        label = sigmoid(-predict(test_x[i], v, w, w0, s, sum_sqr))
+        label = sigmoid(predict(test_x[i], v, w, w0, s, sum_sqr))
         if label > 0.5:
             print(test_y[i], 1.0)
         else:
