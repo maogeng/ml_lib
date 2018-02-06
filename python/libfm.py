@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[85]:
+# In[96]:
 
 
 from sklearn import datasets 
@@ -56,9 +56,12 @@ def fit(X, y, s, sum_sqr, iter_num = 10, alpha = 0.01):
             target = y[j]
             p = predict(x, v, w, w0, s, sum_sqr)
             
-            mult = -target * (1.0 - 1.0/(1.0 + np.exp(-target * p)))
+#             mult = -target * (1.0 - 1.0/(1.0 + np.exp(-target * p)))
+#             print(target, sigmoid(p), mult, sigmoid(p)-target)
+            mult = sigmoid(p)-target
+#             print(sigmoid(p))
             
-            update(x, mult, s, v, w, w0, alpha)
+            update( x, mult, s, v, w, w0, alpha)
         
     return v, w, w0
 
@@ -71,11 +74,11 @@ if __name__=='__main__':
     X = iris.data[:100]
     y = iris.target[:100]
     
-    for i in range(len(y)):
-        if y[i] <= 0.0:
-            y[i]= -1.0
-        else:
-            y[i] = 1.0
+#     for i in range(len(y)):
+#         if y[i] <= 0.0:
+#             y[i]= -1.0
+#         else:
+#             y[i] = 1.0
     
     train_x, test_x, train_y, test_y = train_test_split(X, y, random_state=0)
     
@@ -86,9 +89,10 @@ if __name__=='__main__':
     
     for i in range(len(test_y)):
         label = sigmoid(predict(test_x[i], v, w, w0, s, sum_sqr))
-        if label > 0.5:
-            print(test_y[i], 1.0)
-        else:
-            print(test_y[i], -1.0)
+        print(test_y[i], label)
+#         if label > 0.5:
+#             print(test_y[i], 1.0)
+#         else:
+#             print(test_y[i], -1.0)
     
 
