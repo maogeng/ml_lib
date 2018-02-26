@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[96]:
+# In[2]:
 
 
 from sklearn import datasets 
@@ -10,13 +10,10 @@ from sklearn.model_selection import train_test_split
 
 import numpy as np
 
-TASK_REGRESSION = 0
-TASK_CLASSIFICATION = 1
-
 num_factor = 8
 
 ## 更新模型参数
-def update(x, mult, s, v, w, w0, alpha):
+def update(x, mult, v, w, w0, alpha):
     w0 -= alpha * mult
     for i in range(len(x)):
         w[i] -= alpha * (mult * x[i])
@@ -43,7 +40,7 @@ def predict(x, v, w, w0, s, sum_sqr):
     return result
 
 ## 模型训练
-def fit(X, y, s, sum_sqr, iter_num = 10, alpha = 0.01):
+def fit(X, y, s, sum_sqr, iter_num = 100, alpha = 0.01):
     num_samples = len(y)
     random.seed(1)
     w0 = random.random(1)
@@ -56,12 +53,9 @@ def fit(X, y, s, sum_sqr, iter_num = 10, alpha = 0.01):
             target = y[j]
             p = predict(x, v, w, w0, s, sum_sqr)
             
-#             mult = -target * (1.0 - 1.0/(1.0 + np.exp(-target * p)))
-#             print(target, sigmoid(p), mult, sigmoid(p)-target)
             mult = sigmoid(p)-target
-#             print(sigmoid(p))
             
-            update( x, mult, s, v, w, w0, alpha)
+            update(x, mult, v, w, w0, alpha)
         
     return v, w, w0
 
@@ -74,12 +68,6 @@ if __name__=='__main__':
     X = iris.data[:100]
     y = iris.target[:100]
     
-#     for i in range(len(y)):
-#         if y[i] <= 0.0:
-#             y[i]= -1.0
-#         else:
-#             y[i] = 1.0
-    
     train_x, test_x, train_y, test_y = train_test_split(X, y, random_state=0)
     
     s = np.zeros(num_factor)
@@ -87,12 +75,12 @@ if __name__=='__main__':
     
     v, w, w0 = fit(train_x, train_y, s, sum_sqr)
     
+    print(s)
+    print(sum_sqr)
+    
     for i in range(len(test_y)):
-        label = sigmoid(predict(test_x[i], v, w, w0, s, sum_sqr))
+        predict_value = predict(test_x[i], v, w, w0, s, sum_sqr)
+        label = sigmoid(predict_value)
         print(test_y[i], label)
-#         if label > 0.5:
-#             print(test_y[i], 1.0)
-#         else:
-#             print(test_y[i], -1.0)
     
 
